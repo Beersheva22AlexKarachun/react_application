@@ -1,8 +1,7 @@
-import { Clock } from "./components/Clock"
-import { Clocks } from "./components/Clocks"
+import LifeGame from "./components/LifeGame"
 
 const App: React.FC = () => {
-  return <Clocks />
+  return <LifeGame />
 }
 
 export default App
