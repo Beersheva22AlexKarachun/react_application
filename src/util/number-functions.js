@@ -11,3 +11,12 @@ export function countByField(array, field, interval) {
     }, {});
     return res;
 }
+
+
+export function sumArray(array) {
+    return array.reduce((sum, curr) => sum + curr, 0)
+}
+
+export function sumMatrix(matrix) {
+    return matrix.reduce((sum, arr) => sum + sumArray(arr))
+}
