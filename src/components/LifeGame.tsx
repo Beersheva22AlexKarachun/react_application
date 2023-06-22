@@ -8,7 +8,9 @@ import { extendMatrix } from "../util/matrix-function"
 
 // const startMatrix = extendMatrix(GosperGliderGun, config.field.height, config.field.width)
 // const startMatrix = Blinker
-const startMatrix = getRandomMatrix(config.field.height, config.field.width, 0, 2)
+function startMatrix(): number[][] {
+    return getRandomMatrix(config.field.height, config.field.width, 0, 2)
+}
 
 const LifeGame: React.FC = () => {
     const lifeMatrix = useRef<LifeMatrix>();
@@ -16,7 +18,7 @@ const LifeGame: React.FC = () => {
 
     function tickFn(): void {
         if (!lifeMatrix.current) {
-            lifeMatrix.current = new LifeMatrix(startMatrix)
+            lifeMatrix.current = new LifeMatrix(startMatrix())
             setMatrix(lifeMatrix.current.matrix)
         } else {
             setMatrix(lifeMatrix.current.next())
