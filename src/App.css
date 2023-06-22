@@ -1,0 +1,10 @@
+.component-logo {
+    text-align: center;
+    font-size: 2em;
+    font-weight: bold;
+}
+
+.active {
+    background-color: blue;
+    color: white;
+}
