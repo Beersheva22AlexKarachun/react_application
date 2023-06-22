@@ -17,10 +17,9 @@ const Matrix: React.FC<{ matrix: number[][] }> = ({ matrix }) => {
         window.addEventListener("resize", windowResizeHandler)
         return () => window.removeEventListener("resize", windowResizeHandler)
     }, [])
-    // if (matrix.length && !divSize.current) {
-    //     divSize.current = getSize()//config.defaultMatrixSize / matrix.length * config.defaultDivSize
+    
+    //     divSize.current = config.defaultMatrixSize / matrix.length * config.defaultDivSize
     //     // divSize.current = calculateLog(matrix.length, config.points[1], config.points[2])
-    // }
 
     function getRows(): ReactNode {
         return matrix.map((row, i) => <Row row={row} key={i} divSize={divSize} />)

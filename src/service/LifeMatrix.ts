@@ -11,20 +11,24 @@ export default class LifeMatrix {
     }
 
     next(): number[][] {
-        this._matrix = this._matrix.map((row, iRow) => {
-            const newRow = row.map((cell, jColomn) => {
-                const totalNeighbors = range(iRow - 1, iRow + 2)
-                    .map(index => this._countNeighbors(index, jColomn - 1, jColomn + 1))
-                    .reduce((res, x) => res + x)
-                    - cell
-                return this._getCellState(cell, totalNeighbors)
-            })
-            return newRow
-        })
+        this._matrix = this._matrix.map((row, i) => this._getNewRow(row, i))
         return this._matrix
     }
 
-    private _countNeighbors(iRow: number, start: number, end: number) {
+    private _getNewRow(row: number[], i: number): number[] {
+        return row.map((cell, j) => {
+            const totalNeighbors = this._countCellsInMatrix3x3(i, j) - cell
+            return this._getCellState(cell, totalNeighbors)
+        })
+    }
+
+    private _countCellsInMatrix3x3(i: number, j: number): number {
+        return range(i - 1, i + 2)
+            .map(index => this._countNeighborsInRow(index, j - 1, j + 1))
+            .reduce((res, x) => res + x)
+    }
+
+    private _countNeighborsInRow(iRow: number, start: number, end: number) {
         start = start > 0 ? start : 0
         return this._matrix[iRow]?.slice(start, end + 1).reduce((res, x) => res + x, 0) ?? 0
     }
