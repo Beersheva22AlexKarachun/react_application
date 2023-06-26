@@ -1,4 +1,10 @@
-const SignOut: React.FC = () =>
-    <p className="component-logo" style={{ textAlign: "center" }}>SignOut Component</p>
+import { useDispatch } from 'react-redux';
+import { authActions } from '../../redux/slices/authSlice';
 
-export default SignOut
+const SignOut: React.FC = () => {
+  const dispatch = useDispatch();
+
+  return <button onClick={() => dispatch(authActions.reset())}>confirm sign out</button>
+}
+
+export default SignOut;

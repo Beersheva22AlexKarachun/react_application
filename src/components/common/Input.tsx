@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import InputResult from "../../module/InputResult";
+import InputResult from "../../model/InputResult";
 
 type Props = {
     submitFn: (inputText: string) => InputResult,
