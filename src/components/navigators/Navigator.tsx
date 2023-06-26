@@ -1,29 +1,39 @@
-import { useEffect } from "react";
-import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom"
+import { AppBar, Box, Tab, Tabs } from '@mui/material';
+import { ReactNode, useEffect, useState } from 'react';
+import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 
 export type RouteType = {
   to: string, label: string
 }
-
 const Navigator: React.FC<{ routes: RouteType[] }> = ({ routes }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [value, setValue] = useState(0)
+
   useEffect(() => {
-    let index = routes.findIndex(route => route.to === location.pathname);
-    index = index < 0 ? 0 : index
-    navigate(routes[index].to)
+    let index = routes.findIndex(r => r.to === location.pathname);
+    if (index < 0) {
+      index = 0;
+    }
+    navigate(routes[index].to);
+    setValue(index)
   }, [routes])
 
-  return <div >
-    <nav>
-      <ul className="navigator-list">
-        {routes.map(route =>
-          <li key={route.label} className="navigator-item">
-            <NavLink to={route.to}>{route.label}</NavLink>
-          </li>)}
-      </ul>
-    </nav>
+  function onChangeFn(event: React.SyntheticEvent, newValue: number) {
+    setValue(newValue)
+  }
+
+  function getTabs(): ReactNode {
+    return routes.map(route => <Tab component={Link} to={route.to} label={route.label} key={route.label} />)
+  }
+
+  return <Box mt={10}>
+    <AppBar sx={{ backgroundColor: "lightgray" }}>
+      <Tabs value={value} onChange={onChangeFn}>
+        {getTabs()}
+      </Tabs>
+    </AppBar>
     <Outlet></Outlet>
-  </div>
+  </Box>
 }
 export default Navigator;

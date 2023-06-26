@@ -8,8 +8,8 @@ const SignIn: React.FC = () => {
 
   return <Input submitFn={function (username: string): InputResult {
     dispatch(authActions.set(username));
-    return { status: "success", message: '' }
-  }} placeholder="username" />
+    return { status: "success", message: 'success' }
+  }} placeholder="username" buttonTitle="Log in" />
 }
 
 export default SignIn;

@@ -1,16 +1,18 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom"
-import Home from "./components/pages/Home"
-import Navigator, { RouteType } from "./components/navigators/Navigator"
-import Customers from "./components/pages/Customers"
-import Orders from "./components/pages/Orders"
-import Products from "./components/pages/Products"
-import ShoppingCart from "./components/pages/ShoppingCart"
-import SignIn from "./components/pages/SignIn"
-import SignOut from "./components/pages/SignOut"
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { RouteType } from "./components/navigators/Navigator";
+import Home from "./components/pages/Home";
+import Customers from "./components/pages/Customers";
+import Products from "./components/pages/Products";
+import Orders from "./components/pages/Orders";
+import ShoppingCart from "./components/pages/ShoppingCart";
+import SignIn from "./components/pages/SignIn";
+import SignOut from "./components/pages/SignOut";
 import './App.css'
-import routesConfig from "./config/routes-config.json"
-import { useMemo } from "react"
-import { useSelectorAuth } from "./redux/store"
+import { useSelectorAuth } from "./redux/store";
+import { useMemo } from "react";
+import routesConfig from './config/routes-config.json';
+import NotFound from "./components/pages/NotFound";
+import NavigatorDispatcher from "./components/navigators/NavigatorDispatcher";
 
 const { always, authenticated, admin, noadmin, noauthenticated } = routesConfig;
 
@@ -30,19 +32,18 @@ const App: React.FC = () => {
 
   return <BrowserRouter>
     <Routes>
-      <Route path="/" element={<Navigator routes={routes} />}>
+      <Route path="/" element={<NavigatorDispatcher routes={routes} />}>
         <Route index element={<Home />} />
         <Route path="customers" element={<Customers />} />
         <Route path="products" element={<Products />} />
-        <Route path="orders" element={<Orders />} />
+        <Route path="orders"
+          element={<Orders />} />
         <Route path="shoppingcart" element={<ShoppingCart />} />
         <Route path="signin" element={<SignIn />} />
         <Route path="signout" element={<SignOut />} />
+        <Route path="/*" element={<NotFound />} />
       </Route>
     </Routes>
   </BrowserRouter>
 }
-
-export default App
-
-
+export default App;

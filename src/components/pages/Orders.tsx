@@ -1,4 +1,6 @@
-const Orders: React.FC = () =>
-  <p className="component-logo" style={{ textAlign: "center" }}>Order Component</p>
+import { Typography } from "@mui/material"
 
-export default Orders
+const Orders: React.FC = () =>
+  <Typography sx={{ textAlign: "center", fontSize: { xs: "3em", sm: "2em", ls: "4em" } }} >Order Component</Typography>
+
+export default Orders 
