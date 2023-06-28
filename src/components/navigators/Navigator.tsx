@@ -5,10 +5,11 @@ import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-do
 export type RouteType = {
   to: string, label: string
 }
+
 const Navigator: React.FC<{ routes: RouteType[] }> = ({ routes }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [value, setValue] = useState(0)
+  const [value, setValue] = useState(0);
 
   useEffect(() => {
     let index = routes.findIndex(r => r.to === location.pathname);
@@ -16,15 +17,15 @@ const Navigator: React.FC<{ routes: RouteType[] }> = ({ routes }) => {
       index = 0;
     }
     navigate(routes[index].to);
-    setValue(index)
+    setValue(index);
   }, [routes])
 
-  function onChangeFn(event: React.SyntheticEvent, newValue: number) {
-    setValue(newValue)
+  function onChangeFn(event: any, newValue: number) {
+    setValue(newValue);
   }
 
   function getTabs(): ReactNode {
-    return routes.map(route => <Tab component={Link} to={route.to} label={route.label} key={route.label} />)
+    return routes.map(r => <Tab component={NavLink} to={r.to} label={r.label} key={r.label} />)
   }
 
   return <Box mt={10}>
@@ -36,4 +37,5 @@ const Navigator: React.FC<{ routes: RouteType[] }> = ({ routes }) => {
     <Outlet></Outlet>
   </Box>
 }
+
 export default Navigator;

@@ -1,17 +1,17 @@
 import { useEffect, useRef, useState } from "react";
 import InputResult from "../../model/InputResult";
-
 import { StatusType } from "../../model/StatusType";
 import "./Input.css"
 import { Alert, Button, TextField } from "@mui/material";
+
 type Props = {
   submitFn: (inputText: string) => InputResult;
   placeholder: string;
   buttonTitle?: string;
   type?: string
 }
-const Input: React.FC<Props> = ({ submitFn, placeholder, buttonTitle, type }) => {
 
+const Input: React.FC<Props> = ({ submitFn, placeholder, buttonTitle, type }) => {
   const inputElementRef = useRef<any>(null);
   const [disabled, setDisabled] = useState<boolean>(true);
   const [message, setMessage] = useState<string>("");
@@ -31,7 +31,7 @@ const Input: React.FC<Props> = ({ submitFn, placeholder, buttonTitle, type }) =>
     inputElementRef.current = event.target as any
     setDisabled(!event.target.value)
   }
-  
+
   return <div>
     <TextField size="small" type={type || 'text'} placeholder={placeholder} ref={inputElementRef}
       onChange={onChangeFn} />

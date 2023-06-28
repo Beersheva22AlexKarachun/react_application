@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { RouteType } from "./Navigator";
-import { AppBar, Drawer, IconButton, List, ListItem, ListItemButton, ListItemText, SwipeableDrawer, Toolbar, Typography, styled, useTheme } from "@mui/material";
+import { AppBar, Drawer, IconButton, List, ListItem, ListItemButton, ListItemText, SwipeableDrawer, Tab, Toolbar, Typography, styled, useTheme } from "@mui/material";
 import MenuIcon from '@mui/icons-material/Menu';
 import MuiAppBar, { AppBarProps, AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -26,7 +26,7 @@ const NavigatorPortrait: React.FC<{ routes: RouteType[] }> = ({ routes }) => {
 
   const drawerWidth = 240;
 
-
+  // routes.map(route => <Tab component={Link} to={route.to} label={route.label} key={route.label} />)
 
 
   function getRoutes() {
@@ -34,17 +34,19 @@ const NavigatorPortrait: React.FC<{ routes: RouteType[] }> = ({ routes }) => {
       sx={{ width: 250 }}
       role="presentation"
       onClick={() => setOpen(false)}
+      mt={15}
     >
       <List>
-        {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-          <ListItem key={text} disablePadding>
+        {routes.map((route, index) => (
+          <ListItem key={route.label} disablePadding>
             <ListItemButton>
-              <ListItemText primary={text} />
+              <Tab component={Link} to={route.to} label={route.label} key={route.label} />
+              {/* <ListItemText primary={route.label} /> */}
             </ListItemButton>
           </ListItem>
         ))}
       </List>
-    </Box>
+    </Box >
   }
 
   return <Typography variant="h3" align="center">
@@ -73,6 +75,7 @@ const NavigatorPortrait: React.FC<{ routes: RouteType[] }> = ({ routes }) => {
       {getRoutes()}
 
     </SwipeableDrawer>
+    <Outlet></Outlet>
 
   </Typography >
 }
