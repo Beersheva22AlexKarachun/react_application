@@ -1,10 +1,8 @@
 {
-  "minId": 1e5,
-  "maxId": 1e6,
   "minSalary": 7000,
   "maxSalary": 50000,
-  "minYear": 1950,
   "maxYear": 2003,
+  "minYear": 1950,
   "departments": [
     "QA",
     "Audit",

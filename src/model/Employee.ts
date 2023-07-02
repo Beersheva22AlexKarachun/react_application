@@ -1,7 +1,7 @@
 type Employee = {
   id?: number | string,
   name: string,
-  birthDate: string,
+  birthDate: Date,
   department: string,
   salary: number,
   gender: "male" | "female"

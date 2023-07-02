@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import NavigatorDispatcher from "./components/navigators/NavigatorDispatcher";
+
 import SignIn from "./components/pages/SignIn";
 import SignOut from "./components/pages/SignOut";
 import './App.css'
@@ -15,29 +16,32 @@ import AgeStatistics from "./components/pages/AgeStatistics";
 import SalaryStatistics from "./components/pages/SalaryStatistics";
 
 const { always, authenticated, admin, noadmin, noauthenticated } = routesConfig;
-
 type RouteTypeOrder = RouteType & { order?: number }
 
-function getRoutes(userData: UserData): RouteTypeOrder[] {
+function getRoutes(userData: UserData): RouteType[] {
   const res: RouteTypeOrder[] = [];
   res.push(...always);
   if (userData) {
-    res.push(...authenticated)
-    res.push(...(userData.role === "admin" ? admin : noadmin));
+    res.push(...authenticated);
+    if (userData.role === 'admin') {
+      res.push(...admin)
+    } else {
+      res.push(...noadmin)
+    }
   } else {
-    res.push(...noauthenticated)
+    res.push(...noauthenticated);
   }
 
   res.sort((r1, r2) => {
-    let res: number = 0;
+    let res = 0;
     if (r1.order && r2.order) {
-      res = r1.order - r2.order
+      res = r1.order - r2.order;
     }
     return res
   });
-
+  
   if (userData) {
-    res[res.length - 1].label = userData.email
+    res[res.length - 1].label = userData.email;
   }
   return res
 }
@@ -45,7 +49,6 @@ function getRoutes(userData: UserData): RouteTypeOrder[] {
 const App: React.FC = () => {
   const userData = useSelectorAuth();
   const routes = useMemo(() => getRoutes(userData), [userData])
-
   return <BrowserRouter>
     <Routes>
       <Route path="/" element={<NavigatorDispatcher routes={routes} />}>
