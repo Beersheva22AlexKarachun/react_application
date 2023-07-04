@@ -23,3 +23,8 @@
 .navigator-item+.navigator-item {
   margin-left: 3vw;
 }
+
+.data-grid-header {
+  font-style: italic;
+  font-size: 1.2em;
+}

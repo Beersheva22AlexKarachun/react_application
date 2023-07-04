@@ -4,7 +4,7 @@ import NavigatorDispatcher from "./components/navigators/NavigatorDispatcher";
 import SignIn from "./components/pages/SignIn";
 import SignOut from "./components/pages/SignOut";
 import './App.css'
-import { useSelectorAuth } from "./redux/store";
+import { useSelectorAuth, useSelectorCode } from "./redux/store";
 import { useMemo } from "react";
 import routesConfig from './config/routes-config.json';
 import NotFound from "./components/pages/NotFound";
@@ -14,6 +14,7 @@ import Employees from "./components/pages/Employees";
 import AddEmployee from "./components/pages/AddEmployee";
 import AgeStatistics from "./components/pages/AgeStatistics";
 import SalaryStatistics from "./components/pages/SalaryStatistics";
+import GenerateEmployees from "./components/pages/GenerateEmployees";
 
 const { always, authenticated, admin, noadmin, noauthenticated } = routesConfig;
 type RouteTypeOrder = RouteType & { order?: number }
@@ -39,7 +40,7 @@ function getRoutes(userData: UserData): RouteType[] {
     }
     return res
   });
-  
+
   if (userData) {
     res[res.length - 1].label = userData.email;
   }
@@ -47,13 +48,16 @@ function getRoutes(userData: UserData): RouteType[] {
 }
 
 const App: React.FC = () => {
-  const userData = useSelectorAuth();
+  const userData = useSelectorAuth()
+  const code = useSelectorCode()
+  const [alertMessage, severety] = useMemo(() => codeProcessing(), [code])
   const routes = useMemo(() => getRoutes(userData), [userData])
   return <BrowserRouter>
     <Routes>
       <Route path="/" element={<NavigatorDispatcher routes={routes} />}>
         <Route index element={<Employees />} />
         <Route path="employees/add" element={<AddEmployee />} />
+        <Route path="employees/generate" element={<GenerateEmployees />} />
         <Route path="statistics/age" element={<AgeStatistics />} />
         <Route path="statistics/salary" element={<SalaryStatistics />} />
         <Route path="signin" element={<SignIn />} />
@@ -64,3 +68,7 @@ const App: React.FC = () => {
   </BrowserRouter>
 }
 export default App;
+
+function codeProcessing(): any {
+  return ""
+}

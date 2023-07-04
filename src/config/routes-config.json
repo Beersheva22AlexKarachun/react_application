@@ -27,6 +27,11 @@
       "to": "/employees/add",
       "label": "Add Employee",
       "order": 5
+    },
+    {
+      "to": "/employees/generate",
+      "label": "Generate employees",
+      "order": 5
     }
   ],
   "noadmin": [],
