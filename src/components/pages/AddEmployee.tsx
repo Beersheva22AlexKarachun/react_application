@@ -4,16 +4,17 @@ import InputResult from "../../model/InputResult";
 import { authService, employeesService } from "../../config/service-config";
 import { useDispatch } from "react-redux";
 import { authActions } from "../../redux/slices/authSlice";
+import StatusType from "../../model/StatusType";
 
 const AddEmployee: React.FC = () => {
     const dispatch = useDispatch();
     async function submitFn(empl: Employee): Promise<InputResult> {
-        const res: InputResult = {status: 'success', message: ''};
+        const res: InputResult = {status: StatusType.SUCCESS, message: ''};
         try {
             const employee: Employee = await employeesService.addEmployee(empl);
             res.message = `employee with id: ${employee.id} has been added`
         } catch (error: any) {
-           res.status = 'error' ;
+           res.status = StatusType.ERROR ;
            if((typeof(error) == 'string') && error.includes('Authentication')) {
             authService.logout();
             dispatch(authActions.reset());

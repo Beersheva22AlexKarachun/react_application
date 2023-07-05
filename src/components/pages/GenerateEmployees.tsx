@@ -5,6 +5,7 @@ import { getRandomEmployee } from "../../util/random";
 import { employeesService } from "../../config/service-config";
 import employeeConfig from "../../config/employee-config.json"
 import Employee from "../../model/Employee";
+import StatusType from "../../model/StatusType";
 
 
 
@@ -13,14 +14,14 @@ const GenerateEmployees: React.FC = () => {
   const { minYear, minSalary, maxYear, maxSalary, departments } = employeeConfig;
 
   async function submitFn(nEmployees: number): Promise<InputResult> {
-    const res: InputResult = { status: 'success', message: '' };
+    const res: InputResult = { status: StatusType.SUCCESS, message: '' };
     try {
       for (let index = 0; index < nEmployees; index++) {
         await employeesService.addEmployee(getRandomEmployee(minSalary, maxSalary, minYear, maxYear, departments))
       }
       res.message = `${nEmployees} employees have been added`
     } catch (error: any) {
-      res.status = 'error';
+      res.status = StatusType.ERROR;
       res.message = error;
     }
     return res

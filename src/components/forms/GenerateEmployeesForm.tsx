@@ -13,9 +13,9 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import LoginData from '../../model/LoginData';
 import InputResult from '../../model/InputResult';
-import { Alert, Snackbar } from '@mui/material';
-import { useRef, useState } from 'react';
-import { StatusType } from '../../model/StatusType';
+import { useSelectorAlert } from '../../redux/store';
+import { alertActions } from '../../redux/slices/alertSlice';
+import { useDispatch } from 'react-redux';
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
@@ -24,18 +24,17 @@ type Props = {
 }
 
 const GenerateEmployeesForm: React.FC<Props> = ({ submitFn }) => {
-  const [open, setOpen] = useState(false)
-  const message = useRef<string>("");
-  const severity = useRef<StatusType>("success");
-
+  const dispatch = useDispatch()
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const nEmployees: number = +(data.get("nEmployees") as string);
     const result = await submitFn(nEmployees);
-    message.current = (result.message || "")
-    message.current && setOpen(true)
-    severity.current = result.status
+    dispatch(alertActions.set(result))
+
+    // message.current = (result.message || "")
+    // message.current && setOpen(true)
+    // severity.current = result.status
   };
 
   return (
@@ -79,11 +78,6 @@ const GenerateEmployeesForm: React.FC<Props> = ({ submitFn }) => {
               Generate
             </Button>
           </Box>
-          <Snackbar open={open} autoHideDuration={6e3} onClose={() => setOpen(false)}>
-            <Alert severity={severity.current} onClose={() => setOpen(false)}>
-              {message.current}
-            </Alert>
-          </Snackbar>
         </Box>
       </Container>
     </ThemeProvider >

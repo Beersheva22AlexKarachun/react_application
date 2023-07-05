@@ -19,7 +19,6 @@ export default class AuthServiceJwt implements AuthService {
 
   async logout(): Promise<void> {
     localStorage.removeItem(AUTH_DATA_JWT)
-
   }
 
 }

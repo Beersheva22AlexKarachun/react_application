@@ -3,7 +3,9 @@ import { FormControl, Grid, TextField, InputLabel, Select, Box, MenuItem, Button
 import Employee from "../../model/Employee";
 import employeeConfig from "../../config/employee-config.json"
 import InputResult from "../../model/InputResult";
-import { StatusType } from "../../model/StatusType";
+import StatusType from "../../model/StatusType";
+import { alertActions } from "../../redux/slices/alertSlice";
+import { useDispatch } from "react-redux";
 
 type Props = {
   submitFn: (empl: Employee) => Promise<InputResult>,
@@ -17,11 +19,10 @@ const initialEmployee: Employee = {
 };
 
 export const EmployeeForm: React.FC<Props> = ({ submitFn }) => {
+  const dispatch = useDispatch()
   const { minYear, minSalary, maxYear, maxSalary, departments } = employeeConfig;
   const [employee, setEmployee] = useState<Employee>(initialEmployee);
   const [errorMessage, setErrorMessage] = useState('');
-  const [alertMessage, setAlertMessage] = useState('')
-  const severity = useRef<StatusType>('success')
 
   function handlerName(event: any) {
     const name = event.target.value;
@@ -65,12 +66,10 @@ export const EmployeeForm: React.FC<Props> = ({ submitFn }) => {
       setErrorMessage("Please select gender")
     } else {
       const res = await submitFn(employee);
-      severity.current = res.status;
-      res.status == "success" && event.target.reset();
-      setAlertMessage(res.message!);
+      dispatch(alertActions.set(res))
     }
   }
-  
+
   function onResetFn(event: any) {
     setEmployee(initialEmployee);
   }
@@ -138,11 +137,5 @@ export const EmployeeForm: React.FC<Props> = ({ submitFn }) => {
       </Box>
 
     </form>
-    <Snackbar open={!!alertMessage} autoHideDuration={20000}
-      onClose={() => setAlertMessage('')}>
-      <Alert onClose={() => setAlertMessage('')} severity={severity.current} sx={{ width: '100%' }}>
-        {alertMessage}
-      </Alert>
-    </Snackbar>
   </Box>
 }

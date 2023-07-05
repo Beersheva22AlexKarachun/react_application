@@ -15,6 +15,7 @@ import AddEmployee from "./components/pages/AddEmployee";
 import AgeStatistics from "./components/pages/AgeStatistics";
 import SalaryStatistics from "./components/pages/SalaryStatistics";
 import GenerateEmployees from "./components/pages/GenerateEmployees";
+import SnackAlert from "./components/common/SnackAlert";
 
 const { always, authenticated, admin, noadmin, noauthenticated } = routesConfig;
 type RouteTypeOrder = RouteType & { order?: number }
@@ -65,6 +66,7 @@ const App: React.FC = () => {
         <Route path="/*" element={<NotFound />} />
       </Route>
     </Routes>
+    <SnackAlert autoHideDuration={5e3}/>
   </BrowserRouter>
 }
 export default App;

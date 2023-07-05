@@ -15,7 +15,9 @@ import LoginData from '../../model/LoginData';
 import InputResult from '../../model/InputResult';
 import { Alert, Snackbar } from '@mui/material';
 import { useRef, useState } from 'react';
-import { StatusType } from '../../model/StatusType';
+import { useDispatch } from 'react-redux';
+import { alertActions } from '../../redux/slices/alertSlice';
+
 
 function Copyright(props: any) {
   return (
@@ -37,19 +39,14 @@ type Props = {
 }
 
 const SignInForm: React.FC<Props> = ({ submitFn }) => {
-  const [open, setOpen] = useState(false)
-  const message = useRef<string>("");
-  const severity = useRef<StatusType>("success");
-
+  const dispatch = useDispatch()
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const email: string = data.get("email") as string
     const password: string = data.get("password") as string
     const result = await submitFn({ email, password });
-    message.current = (result.message || "")
-    message.current && setOpen(true)
-    severity.current = result.status
+    dispatch(alertActions.set(result))
   };
 
   return (
@@ -100,11 +97,6 @@ const SignInForm: React.FC<Props> = ({ submitFn }) => {
               Sign In
             </Button>
           </Box>
-          <Snackbar open={open} autoHideDuration={6e3} onClose={() => setOpen(false)}>
-            <Alert severity={severity.current} onClose={() => setOpen(false)}>
-              {message.current}
-            </Alert>
-          </Snackbar>
         </Box>
         <Copyright sx={{ mt: 8, mb: 4 }} />
       </Container>

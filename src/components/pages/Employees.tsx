@@ -1,45 +1,53 @@
-import { Alert, Box, Icon, Snackbar, Typography } from "@mui/material"
-import { FormEvent, MouseEventHandler, useEffect, useMemo, useRef, useState } from "react";
+import { Alert, Box, Snackbar, Typography } from "@mui/material"
+import { useEffect, useMemo, useRef, useState } from "react";
 import Employee from "../../model/Employee";
 import { authService, employeesService } from "../../config/service-config";
-import { DataGrid, GridActionsCellItem, GridColDef, GridDeleteForeverIcon, GridRowId, GridRowParams } from "@mui/x-data-grid";
+import { DataGrid, GridActionsCellItem, GridAddIcon, GridCheckCircleIcon, GridColDef, GridDeleteForeverIcon, GridDragIcon, GridLoadIcon, GridRowParams, GridTableRowsIcon, GridViewHeadlineIcon } from "@mui/x-data-grid";
 import { useDispatch } from "react-redux";
 import { authActions } from "../../redux/slices/authSlice";
-import { StatusType } from "../../model/StatusType";
+import StatusType from "../../model/StatusType";
 import { useSelectorAuth } from "../../redux/store";
 import UserData from "../../model/UserData";
 import Confirm, { Props } from "../common/Confirm";
+import { alertActions } from "../../redux/slices/alertSlice";
+import BasicModal from "../common/BasicModal";
+import { EmployeeForm } from "../forms/EmployeeForm";
 
 const Employees: React.FC = () => {
-  const [open, setOpen] = useState(false)
+  const [openDialog, setOpenDialog] = useState(false)
+  const [openForm, setOpenForm] = useState(false)
   const currentId = useRef<number>()
   const userData = useSelectorAuth();
   const columns: GridColDef[] = useMemo(() => getColumns(userData), [userData]);
   const dispatch = useDispatch();
-  const [alertMessage, setAlertMessage] = useState<string>("")
   const [employees, setEmployees] = useState<Employee[]>([]);
-  const severity = useRef<StatusType>('success')
 
   const confirmProps: Props = {
+    open: openDialog,
     dialogTitle: `Delete employee ID#${currentId.current}?`,
-    dialogContent: `You are about to delete employee ID#${currentId.current}.\nThe employee will be permanently removed.`,
+    dialogContent: `You are about to delete employee ID#${currentId.current}.\nThe employee will be permanently deleted.`,
     closeHandler: () => {
-      setOpen(false)
+      setOpenDialog(false)
     },
     actions: [
-      { title: 'cancel', action: () => setOpen(false) },
+      { title: 'cancel', action: () => setOpenDialog(false) },
       {
         title: 'delete', action: () => {
           employeesService.delete(currentId.current!)
-          setOpen(false)
+          setOpenDialog(false)
+          dispatch(alertActions.set({ message: `Employee ID#${currentId.current} has been deleted` }))
         }
       },
     ]
   }
 
-  function openFn(id: number) {
-    setOpen(true)
+  function openDeleteDialog(id: number) {
+    setOpenDialog(true)
     currentId.current = id
+  }
+
+  function getFormContent() {
+    return <EmployeeForm submitFn={async () => ({ status: StatusType.SUCCESS, message: '' })}></EmployeeForm>
   }
 
   function getColumns(userData: UserData): GridColDef[] {
@@ -56,10 +64,16 @@ const Employees: React.FC = () => {
       headerName: 'Actions',
       type: 'actions',
       getActions: (params: GridRowParams) => [
-        <GridActionsCellItem icon={<GridDeleteForeverIcon />} onClick={() => openFn(+params.id)} label="Delete" />,
+        <GridActionsCellItem icon={<GridLoadIcon />} onClick={() => openUpdateForm(params.row)} label="Delete" />,
+        <GridActionsCellItem icon={<GridDeleteForeverIcon />} onClick={() => openDeleteDialog(+params.id)} label="Delete" />,
       ]
     })
     return res
+  }
+
+  function openUpdateForm(row: any): void {
+    setOpenForm(true);
+    console.log(row)
   }
 
 
@@ -71,8 +85,7 @@ const Employees: React.FC = () => {
             authService.logout();
             dispatch(authActions.reset())
           } else {
-            setAlertMessage(empls)
-            severity.current = "error"
+            dispatch(alertActions.set({ message: empls, severity: StatusType.ERROR }))
           }
         } else {
           setEmployees(empls.map(e => ({ ...e, birthDate: new Date(e.birthDate) })))
@@ -87,15 +100,11 @@ const Employees: React.FC = () => {
       <DataGrid columns={columns} rows={employees} />
     </Box>
 
-    {open && <Confirm {...confirmProps} />}
-
-    <Snackbar open={!!alertMessage} autoHideDuration={20000}
-      onClose={() => setAlertMessage('')}>
-      <Alert onClose={() => setAlertMessage('')} severity={severity.current} sx={{ width: '100%' }}>
-        {alertMessage}
-      </Alert>
-    </Snackbar>
+    {openDialog && <Confirm {...confirmProps} />}
+    {openForm && <BasicModal content={getFormContent()} onCloseHandler={() => setOpenForm(false)} />}
   </Box>
 }
 
 export default Employees;
+
+
