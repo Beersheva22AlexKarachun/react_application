@@ -12,16 +12,18 @@ import Confirm, { Props } from "../common/Confirm";
 import { alertActions } from "../../redux/slices/alertSlice";
 import BasicModal from "../common/BasicModal";
 import { EmployeeForm } from "../forms/EmployeeForm";
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
 const Employees: React.FC = () => {
   const [openDialog, setOpenDialog] = useState(false)
   const [openForm, setOpenForm] = useState(false)
   const currentId = useRef<number>()
   const userData = useSelectorAuth();
-  const columns: GridColDef[] = useMemo(() => getColumns(userData), [userData]);
+  const columns: GridColDef[] = useMemo(() => getColumns(), [userData]);
   const dispatch = useDispatch();
   const [employees, setEmployees] = useState<Employee[]>([]);
-
+  
   const confirmProps: Props = {
     open: openDialog,
     dialogTitle: `Delete employee ID#${currentId.current}?`,
@@ -33,7 +35,7 @@ const Employees: React.FC = () => {
       { title: 'cancel', action: () => setOpenDialog(false) },
       {
         title: 'delete', action: () => {
-          employeesService.delete(currentId.current!)
+          employeesService.deleteEmployee(currentId.current!)
           setOpenDialog(false)
           dispatch(alertActions.set({ message: `Employee ID#${currentId.current} has been deleted` }))
         }
@@ -50,7 +52,7 @@ const Employees: React.FC = () => {
     return <EmployeeForm submitFn={async () => ({ status: StatusType.SUCCESS, message: '' })}></EmployeeForm>
   }
 
-  function getColumns(userData: UserData): GridColDef[] {
+  function getColumns(): GridColDef[] {
     const res: GridColDef[] = [
       { field: "id", headerName: "ID", flex: 0.3, headerClassName: "data-grid-header", align: "center", headerAlign: "center" },
       { field: "name", headerName: "Name", flex: 0.5 },
@@ -64,8 +66,8 @@ const Employees: React.FC = () => {
       headerName: 'Actions',
       type: 'actions',
       getActions: (params: GridRowParams) => [
-        <GridActionsCellItem icon={<GridLoadIcon />} onClick={() => openUpdateForm(params.row)} label="Delete" />,
-        <GridActionsCellItem icon={<GridDeleteForeverIcon />} onClick={() => openDeleteDialog(+params.id)} label="Delete" />,
+        <GridActionsCellItem icon={<EditIcon />} onClick={() => openUpdateForm(params.row)} label="Delete" />,
+        <GridActionsCellItem icon={<DeleteForeverIcon />} onClick={() => openDeleteDialog(+params.id)} label="Delete" />,
       ]
     })
     return res
