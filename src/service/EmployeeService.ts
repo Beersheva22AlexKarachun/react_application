@@ -2,6 +2,8 @@ import { Observable } from "rxjs";
 import Employee from "../model/Employee";
 import StatisticsType from "../model/StatisticsType";
 import Response from "../model/Response";
+import StatisticsType from "../model/StatisticsType";
+import Response from "../model/Response";
 
 export default interface EmployeeService {
   addEmployee(empl: Employee): Promise<Employee>;

@@ -2,9 +2,6 @@ import { Observable } from "rxjs";
 import Employee from "../model/Employee";
 import { AUTH_DATA_JWT } from "./AuthServiceJwt";
 import EmployeeService from "./EmployeeService";
-import StatisticsType from "../model/StatisticsType";
-import Response from "../model/Response";
-import StatusType from "../model/StatusType";
 
 enum METHOD {
   GET = "GET",
@@ -14,47 +11,6 @@ enum METHOD {
 }
 export default class EmployeeServiceRest implements EmployeeService {
   constructor(private url: string) { }
-
-  private countByField(array: any[], field: string, interval: number): Map<number, number> {
-    const res = array.reduce((res, empl) => {
-      const index = Math.trunc(empl[field] / interval);
-      res[index] = (res[index] ?? 0) + 1;
-      return res;
-    }, {});
-    return res;
-  }
-
-  async getStatistics(field: string, interval: number): Promise<StatisticsType[]> {
-    let employees: any[] = await fetch(this.url, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem(AUTH_DATA_JWT) || ''}`
-      }
-    }).then(response => response.json());
-
-    if (field === "birthDate") {
-      const currentYear = new Date().getFullYear();
-      employees = employees.map(empl => ({ "age": currentYear - new Date(empl.birthDate).getFullYear() }))
-      field = "age";
-    }
-
-    const statObj = Object.entries(this.countByField(employees, field, interval));
-    return statObj.map(i => {
-      const [index, count] = i;
-      const from = (+index) * interval;
-      const to = (+index + 1) * interval - 1;
-      return { from, to, count }
-    })
-  }
-
-
-  updateEmployee(id: number, newEmployee: Employee): Promise<Employee> {
-    const res = fetch(this.url + `/${id}`, {
-      method: 'PUT',
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(newEmployee)
-    }).then(response => response.json())
-    return res
-  }
 
   async addEmployee(empl: Employee): Promise<Employee> {
     let responseText = '';
@@ -79,8 +35,6 @@ export default class EmployeeServiceRest implements EmployeeService {
       throw responseText ? responseText : "Server is unavailable. Repeat later on";
     }
   }
-
-
 
   getEmployees(): Observable<Employee[] | string> {
     return new Observable((subscriber) => {

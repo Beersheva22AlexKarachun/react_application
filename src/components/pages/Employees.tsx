@@ -22,8 +22,10 @@ const Employees: React.FC = () => {
   const currentId = useRef<number>()
   const userData = useSelectorAuth();
   const columns: GridColDef[] = useMemo(() => getColumns(), [userData]);
+  const columns: GridColDef[] = useMemo(() => getColumns(), [userData]);
   const dispatch = useDispatch();
   const [employees, setEmployees] = useState<Employee[]>([]);
+  
   
   const confirmProps: Props = {
     open: openDialog,
@@ -36,6 +38,7 @@ const Employees: React.FC = () => {
       { title: 'cancel', action: () => setOpenDialog(false) },
       {
         title: 'delete', action: () => {
+          employeesService.deleteEmployee(currentId.current!)
           employeesService.deleteEmployee(currentId.current!)
           setOpenDialog(false)
           dispatch(alertActions.set({ message: `Employee ID#${currentId.current} has been deleted` }))
@@ -54,6 +57,7 @@ const Employees: React.FC = () => {
   }
 
   function getColumns(): GridColDef[] {
+  function getColumns(): GridColDef[] {
     const res: GridColDef[] = [
       { field: "id", headerName: "ID", flex: 0.3, headerClassName: "data-grid-header", align: "center", headerAlign: "center" },
       { field: "name", headerName: "Name", flex: 0.5 },
@@ -67,6 +71,8 @@ const Employees: React.FC = () => {
       headerName: 'Actions',
       type: 'actions',
       getActions: (params: GridRowParams) => [
+        <GridActionsCellItem icon={<EditIcon />} onClick={() => openUpdateForm(params.row)} label="Delete" />,
+        <GridActionsCellItem icon={<DeleteForeverIcon />} onClick={() => openDeleteDialog(+params.id)} label="Delete" />,
         <GridActionsCellItem icon={<EditIcon />} onClick={() => openUpdateForm(params.row)} label="Delete" />,
         <GridActionsCellItem icon={<DeleteForeverIcon />} onClick={() => openDeleteDialog(+params.id)} label="Delete" />,
       ]
