@@ -15,10 +15,10 @@ const columns: GridColDef[] = [
 const AgeStatistics: React.FC = () => {
   const [stat, setStat] = useState<StatisticsType[]>([])
 
-  useEffect(() => {
-    employeesService.getStatistics("birthDate", 10)
-      .then(stat => setStat(stat))
-  }, [])
+  // useEffect(() => {
+  //   employeesService.getStatistics("birthDate", 10)
+  //     .then(stat => setStat(stat))
+  // }, [])
 
   return <Statistics
     columns={columns}

@@ -1,10 +1,11 @@
 type Employee = {
-  id?: number | string,
-  name: string,
+  id?: any,
   birthDate: Date,
+  name: string,
   department: string,
   salary: number,
-  gender: "male" | "female"
-}
+  gender: 'male' | 'female'
 
-export default Employee
+
+}
+export default Employee;

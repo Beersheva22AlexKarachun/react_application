@@ -1,10 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
-import StatusType from '../../model/StatusType';
+import { StatusType } from '../../model/StatusType';
 import InputResult from '../../model/InputResult';
 
 const initialState: { alert: InputResult } = {
   alert: {
-    status: StatusType.SUCCESS
+    status: "success",
+    message: ""
   }
 }
 

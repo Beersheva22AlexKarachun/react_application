@@ -1,7 +1,7 @@
-import AuthService from "../service/AuthService";
-import AuthServiceJwt from "../service/AuthServiceJwt";
-import EmployeeService from "../service/EmployeeService";
-import EmployeeServiceRest from "../service/EmployeeServiceRest";
+import AuthService from "../service/auth/AuthService";
+import AuthServiceFire from "../service/auth/AuthServiceFB";
+import EmployeeService from "../service/crud/EmployeeService";
+import EmployeeServiceFirebase from "../service/crud/EmployeeServiceFirebase";
 
-export const authService: AuthService = new AuthServiceJwt('http://localhost:3500/login')
-export const employeesService: EmployeeService = new EmployeeServiceRest("http://localhost:3500/employees")
+export const authService: AuthService = new AuthServiceFire()
+export const employeesService: EmployeeService = new EmployeeServiceFirebase()

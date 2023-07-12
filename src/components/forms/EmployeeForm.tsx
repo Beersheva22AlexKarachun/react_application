@@ -3,12 +3,10 @@ import { FormControl, Grid, TextField, InputLabel, Select, Box, MenuItem, Button
 import Employee from "../../model/Employee";
 import employeeConfig from "../../config/employee-config.json"
 import InputResult from "../../model/InputResult";
-import StatusType from "../../model/StatusType";
-import { alertActions } from "../../redux/slices/alertSlice";
-import { useDispatch } from "react-redux";
 
 type Props = {
   submitFn: (empl: Employee) => Promise<InputResult>,
+  employeeUpdated?: Employee
 }
 
 const initialDate: any = 0;
@@ -18,40 +16,36 @@ const initialEmployee: Employee = {
   gender: initialGender
 };
 
-export const EmployeeForm: React.FC<Props> = ({ submitFn }) => {
-  const dispatch = useDispatch()
-  const { minYear, minSalary, maxYear, maxSalary, departments } = employeeConfig;
-  const [employee, setEmployee] = useState<Employee>(initialEmployee);
+export const EmployeeForm: React.FC<Props> = ({ submitFn, employeeUpdated }) => {
+  const { minYear, minSalary, maxYear, maxSalary, departments }
+    = employeeConfig;
+  const [employee, setEmployee] =
+    useState<Employee>(employeeUpdated || initialEmployee);
   const [errorMessage, setErrorMessage] = useState('');
-
   function handlerName(event: any) {
     const name = event.target.value;
     const emplCopy = { ...employee };
     emplCopy.name = name;
     setEmployee(emplCopy);
   }
-
   function handlerBirthdate(event: any) {
     const birthDate = event.target.value;
     const emplCopy = { ...employee };
     emplCopy.birthDate = new Date(birthDate);
     setEmployee(emplCopy);
   }
-
   function handlerSalary(event: any) {
     const salary: number = +event.target.value;
     const emplCopy = { ...employee };
     emplCopy.salary = salary;
     setEmployee(emplCopy);
   }
-
   function handlerDepartment(event: any) {
     const department = event.target.value;
     const emplCopy = { ...employee };
     emplCopy.department = department;
     setEmployee(emplCopy);
   }
-
   function genderHandler(event: any) {
     setErrorMessage('');
     const gender: 'male' | 'female' = event.target.value;
@@ -59,19 +53,22 @@ export const EmployeeForm: React.FC<Props> = ({ submitFn }) => {
     emplCopy.gender = gender;
     setEmployee(emplCopy);
   }
-
   async function onSubmitFn(event: any) {
     event.preventDefault();
     if (!employee.gender) {
       setErrorMessage("Please select gender")
     } else {
       const res = await submitFn(employee);
-      dispatch(alertActions.set(res))
-    }
-  }
 
+
+      res.status == "success" && event.target.reset();
+
+    }
+
+
+  }
   function onResetFn(event: any) {
-    setEmployee(initialEmployee);
+    setEmployee(employeeUpdated || initialEmployee);
   }
 
   return <Box sx={{ marginTop: { sm: "25vh" } }}>
@@ -96,7 +93,7 @@ export const EmployeeForm: React.FC<Props> = ({ submitFn }) => {
           <TextField type="date" required fullWidth label="birthDate"
             value={employee.birthDate ? employee.birthDate.toISOString()
               .substring(0, 10) : ''} inputProps={{
-
+                readOnly: !!employeeUpdated,
                 min: `${minYear}-01-01`,
                 max: `${maxYear}-12-31`
               }} InputLabelProps={{
@@ -123,19 +120,25 @@ export const EmployeeForm: React.FC<Props> = ({ submitFn }) => {
               name="radio-buttons-group"
               row onChange={genderHandler}
             >
-              <FormControlLabel value="female" control={<Radio />} label="Female" />
-              <FormControlLabel value="male" control={<Radio />} label="Male" />
+              <FormControlLabel value="female" control={<Radio />} label="Female" disabled={!!employeeUpdated} />
+              <FormControlLabel value="male" control={<Radio />} label="Male" disabled={!!employeeUpdated} />
               <FormHelperText>{errorMessage}</FormHelperText>
             </RadioGroup>
           </FormControl>
         </Grid>
       </Grid>
 
+
+
+
       <Box sx={{ marginTop: { xs: "10vh", sm: "5vh" }, textAlign: "center" }}>
         <Button type="submit" >Submit</Button>
         <Button type="reset">Reset</Button>
       </Box>
 
+
+
     </form>
+
   </Box>
 }
