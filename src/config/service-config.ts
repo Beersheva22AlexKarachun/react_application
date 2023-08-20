@@ -1,7 +1,5 @@
-import AuthService from "../service/auth/AuthService";
-import AuthServiceFire from "../service/auth/AuthServiceFB";
-import EmployeeService from "../service/crud/EmployeeService";
-import EmployeeServiceFirebase from "../service/crud/EmployeeServiceFirebase";
+import AdvertisementService from "../service/crud/AdvertisementService";
+import AdvertisementServiceImpl from "../service/crud/AdvertisementServiceImpl";
+import { baseUrl } from "./advertisement-config";
 
-export const authService: AuthService = new AuthServiceFire()
-export const employeesService: EmployeeService = new EmployeeServiceFirebase()
+export const adService: AdvertisementService = new AdvertisementServiceImpl(baseUrl);

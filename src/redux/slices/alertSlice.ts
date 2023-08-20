@@ -1,17 +1,17 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { StatusType } from '../../model/StatusType';
 import InputResult from '../../model/InputResult';
+import StatusType from '../../model/StatusType';
 
 const initialState: { alert: InputResult } = {
   alert: {
-    status: "success",
+    status: StatusType.SUCCESS,
     message: ""
   }
 }
 
 const alertSlice = createSlice({
   initialState,
-  name: "codeState",
+  name: "alertState",
   reducers: {
     set: (state, data) => {
       state.alert = data.payload

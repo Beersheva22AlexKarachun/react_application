@@ -1,1 +1,7 @@
-export type StatusType = "error" | "success" | "warning";
+enum StatusType{
+  ERROR="error",
+  WARNING="warning",
+  SUCCESS="success"
+}
+
+export default StatusType;
