@@ -6,6 +6,7 @@ import TextField from '@mui/material/TextField';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
+import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
@@ -14,10 +15,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import LoginData from '../../model/LoginData';
 import InputResult from '../../model/InputResult';
 import { Alert, Snackbar } from '@mui/material';
-import { useRef, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { alertActions } from '../../redux/slices/alertSlice';
-
+import { StatusType } from '../../model/StatusType';
 
 function Copyright(props: any) {
   return (
@@ -37,16 +35,19 @@ const defaultTheme = createTheme();
 type Props = {
   submitFn: (loginData: LoginData) => Promise<InputResult>
 }
-
 const SignInForm: React.FC<Props> = ({ submitFn }) => {
-  const dispatch = useDispatch()
+  const message = React.useRef<string>('');
+  const [open, setOpen] = React.useState(false);
+  const severity = React.useRef<StatusType>('success');
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    const email: string = data.get("email") as string
-    const password: string = data.get("password") as string
+    const email: string = data.get('email')! as string;
+    const password: string = data.get('password')! as string;
     const result = await submitFn({ email, password });
-    dispatch(alertActions.set(result))
+    message.current = result.message!;
+    severity.current = result.status;
+    message.current && setOpen(true);
   };
 
   return (
@@ -55,7 +56,8 @@ const SignInForm: React.FC<Props> = ({ submitFn }) => {
         <CssBaseline />
         <Box
           sx={{
-            marginTop: 8,
+            marginTop: { xs: 8, sm: -4, md: 8 },
+
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
@@ -68,40 +70,56 @@ const SignInForm: React.FC<Props> = ({ submitFn }) => {
             Sign in
           </Typography>
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
-              autoFocus
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-            />
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
-              Sign In
-            </Button>
+            <Grid container justifyContent={'center'} spacing={3}>
+              <Grid item xs={12} sm={6} md={12}>
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  id="email"
+                  label="Email Address"
+                  name="email"
+                  autoComplete="email"
+                  autoFocus
+
+                />
+              </Grid>
+              <Grid item xs={12} sm={6} md={12}>
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  name="password"
+                  label="Password"
+                  type="password"
+                  id="password"
+                  autoComplete="current-password"
+
+                />
+              </Grid>
+              <Grid item xs={12} >
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+
+                >
+                  Sign In
+                </Button>
+              </Grid>
+            </Grid>
+
           </Box>
+          <Snackbar open={open} autoHideDuration={10000}
+            onClose={() => setOpen(false)}>
+            <Alert onClose={() => setOpen(false)} severity={severity.current} sx={{ width: '100%' }}>
+              {message.current}
+            </Alert>
+          </Snackbar>
         </Box>
-        <Copyright sx={{ mt: 8, mb: 4 }} />
+        <Copyright sx={{ mt: 4, mb: 4 }} />
       </Container>
-    </ThemeProvider >
+    </ThemeProvider>
   );
 }
-
 export default SignInForm;

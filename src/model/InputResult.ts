@@ -1,4 +1,4 @@
-import StatusType from "./StatusType";
+import { StatusType } from "./StatusType";
 
 type InputResult = {
   status: StatusType;

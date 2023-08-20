@@ -1,31 +1,60 @@
-import InputResult from "../../model/InputResult";
 import { useDispatch } from "react-redux";
-import GenerateEmployeesForm from "../forms/GenerateEmployeesForm";
-import { getRandomEmployee } from "../../util/random";
+import InputResult from "../../model/InputResult"
 import { employeesService } from "../../config/service-config";
-import employeeConfig from "../../config/employee-config.json"
 import Employee from "../../model/Employee";
-import StatusType from "../../model/StatusType";
+import CodePayload from "../../model/CodePayload";
+import CodeType from "../../model/CodeType";
+import { getRandomEmployee } from "../../util/random";
+import employeeConfig from '../../config/employee-config.json';
+import { codeActions } from "../../redux/slices/codeSlice";
+import Input from "../common/Input";
 
-
+const { minSalary, maxSalary, departments, minYear, maxYear } = employeeConfig;
+const MAX_AMOUNT = 20;
 
 const GenerateEmployees: React.FC = () => {
   const dispatch = useDispatch();
-  const { minYear, minSalary, maxYear, maxSalary, departments } = employeeConfig;
-
-  async function submitFn(nEmployees: number): Promise<InputResult> {
-    const res: InputResult = { status: StatusType.SUCCESS, message: '' };
-    try {
-      for (let index = 0; index < nEmployees; index++) {
-        await employeesService.addEmployee(getRandomEmployee(minSalary, maxSalary, minYear, maxYear, departments))
-      }
-      res.message = `${nEmployees} employees have been added`
-    } catch (error: any) {
-      res.status = StatusType.ERROR;
-      res.message = error;
+  function onSubmit(value: string): InputResult {
+    const amount = +value;
+    const res: InputResult = {
+      status: 'success',
+      message: ''
+    };
+    if (amount < 1 || amount > MAX_AMOUNT) {
+      res.status = 'error';
+      res.message = `amount must be in the range [1 - ${MAX_AMOUNT}]`;
     }
-    return res
+    generateEmployees(amount);
+
+    return res;
   }
-  return <GenerateEmployeesForm submitFn={submitFn} />
+  async function generateEmployees(amount: number): Promise<void> {
+    let message: string = '';
+    let code: CodeType = CodeType.OK;
+    let count: number = 0;
+    for (let i = 0; i < amount; i++) {
+      try {
+        await
+          employeesService.addEmployee(getRandomEmployee(minSalary, maxSalary,
+            minYear, maxYear, departments));
+        count++;
+      } catch (error: any) {
+
+
+        if (error.includes('Authentication')) {
+          code = CodeType.AUTH_ERROR;
+
+
+        }
+        message = error;
+      }
+
+
+    }
+    message = `added ${count} employees ` + message;
+    dispatch(codeActions.set({ code, message }))
+  }
+  return <Input submitFn={onSubmit}
+    placeholder={`amount of random Employees [1 - ${MAX_AMOUNT}]`} type="number" buttonTitle="Generate" />
 }
 export default GenerateEmployees;

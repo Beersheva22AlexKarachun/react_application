@@ -1,18 +1,16 @@
 import * as React from 'react';
 import { useTheme } from '@mui/material/styles';
 import { LineChart, Line, XAxis, YAxis, Label, ResponsiveContainer } from 'recharts';
-import StatisticsType from '../../model/StatisticsType';
 
-
-
-export type ChartProps = {
-  data: StatisticsType[],
-  xAxisKey: string,
-  yAxisKey: string
+type Props = {
+  yAxis: string;
+  data: any[];
+  dataKey: string
 }
 
-const Chart: React.FC<ChartProps> = ({ data, xAxisKey, yAxisKey }) => {
+const Chart: React.FC<Props> = ({ yAxis, data, dataKey }) => {
   const theme = useTheme();
+
   return (
     <React.Fragment>
       <ResponsiveContainer>
@@ -26,12 +24,13 @@ const Chart: React.FC<ChartProps> = ({ data, xAxisKey, yAxisKey }) => {
           }}
         >
           <XAxis
-            dataKey={xAxisKey}
+            dataKey={dataKey}
             stroke={theme.palette.text.secondary}
             style={theme.typography.body2}
-          />
+          >
+
+          </XAxis>
           <YAxis
-            dataKey={yAxisKey}
             stroke={theme.palette.text.secondary}
             style={theme.typography.body2}
           >
@@ -44,13 +43,13 @@ const Chart: React.FC<ChartProps> = ({ data, xAxisKey, yAxisKey }) => {
                 ...theme.typography.body1,
               }}
             >
-              Sales ($)
+              {yAxis}
             </Label>
           </YAxis>
           <Line
             isAnimationActive={false}
             type="monotone"
-            dataKey="count"
+            dataKey="amount"
             stroke={theme.palette.primary.main}
             dot={false}
           />
@@ -59,5 +58,4 @@ const Chart: React.FC<ChartProps> = ({ data, xAxisKey, yAxisKey }) => {
     </React.Fragment>
   );
 }
-
 export default Chart

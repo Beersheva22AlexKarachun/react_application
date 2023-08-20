@@ -3,22 +3,22 @@
   "authenticated": [
     {
       "to": "/",
-      "label": "Employees",
+      "label": "Employees Table",
       "order": 1
     },
     {
       "to": "/signout",
       "label": "Sign Out",
-      "order": 1e3
+      "order": 1000
     },
     {
       "to": "/statistics/age",
-      "label": "Age statistics",
+      "label": "Age Statistics",
       "order": 100
     },
     {
       "to": "/statistics/salary",
-      "label": "Salary statistics",
+      "label": "Salary Statistics",
       "order": 100
     }
   ],
@@ -26,12 +26,12 @@
     {
       "to": "/employees/add",
       "label": "Add Employee",
-      "order": 5
+      "order": 2
     },
     {
-      "to": "/employees/generate",
-      "label": "Generate employees",
-      "order": 5
+      "to": "/generation",
+      "label": "Generate Employees",
+      "order": 20
     }
   ],
   "noadmin": [],
@@ -39,7 +39,7 @@
     {
       "to": "/signin",
       "label": "Sign In",
-      "order": 3
+      "order": 2
     }
   ]
 }

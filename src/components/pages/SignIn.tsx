@@ -1,23 +1,28 @@
 import { useDispatch } from "react-redux";
 import InputResult from "../../model/InputResult";
-import { authActions, authReducer } from "../../redux/slices/authSlice";
+import { authActions } from "../../redux/slices/authSlice";
 import LoginData from "../../model/LoginData";
 import { authService } from "../../config/service-config";
 import UserData from "../../model/UserData";
 import SignInForm from "../forms/SignInForm";
-import StatusType from "../../model/StatusType";
-
 const SignIn: React.FC = () => {
-  const dispatch = useDispatch();
-  async function submitFn(loginData: LoginData): Promise<InputResult> {
-    const res: UserData = await authService.login(loginData)
-    res && dispatch(authActions.set(res))
-    return {
-      status: res ? StatusType.SUCCESS : StatusType.ERROR,
-      message: res ? "" : "Incorrect credentials"
+    const dispatch = useDispatch();
+    async function submitFn(loginData: LoginData): Promise<InputResult> {
+        let inputResult: InputResult = {status: 'error',
+         message: "Server unavailable, repeat later on"}
+        try {
+            const res: UserData = await authService.login(loginData);
+            res && dispatch(authActions.set(res));
+            inputResult = {status: res ? 'success' : 'error',
+            message: res ? '' : 'Incorrect Credentials'}
+            
+        } catch (error) {
+            
+        }
+        return inputResult;
     }
-  }
-  return <SignInForm submitFn={submitFn} />
+    return <SignInForm submitFn={submitFn}/>
+
 }
 
-export default SignIn;
+ export default SignIn;

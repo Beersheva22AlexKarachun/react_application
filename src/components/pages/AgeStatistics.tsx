@@ -1,31 +1,16 @@
-import { Box, Grid, Paper, Typography } from "@mui/material"
-import Chart, { ChartProps } from "../common/Chart";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { employeesService } from "../../config/service-config";
-import StatisticsType from "../../model/StatisticsType";
-import { useEffect, useState } from "react";
+import {  useMemo, useState } from "react";
+import intervals from '../../config/intervals.json'
+import { getStatistics } from "../../service/EmployeesDataProcessor";
 import Statistics from "../common/Statistics";
-
-const columns: GridColDef[] = [
-  { field: "id", headerName: "ID", headerClassName: "data-grid-header", align: "center", headerAlign: "center" },
-  { field: "range", headerName: "Range" },
-  { field: "count", headerName: "Count", type: "number" }
-];
-
+import { useSelectorEmployees } from "../../hooks/hooks";
 const AgeStatistics: React.FC = () => {
-  const [stat, setStat] = useState<StatisticsType[]>([])
+    const {ageIntervals} = intervals;
+    const employees = useSelectorEmployees();
+    const [interval, setInterval] = useState(ageIntervals[0])
+    const statisticsData = useMemo(() => getStatistics(employees, "age", interval),[employees, interval])
+    return <Statistics title={"Age Statistics"} intervalOptions={ageIntervals} data={statisticsData} submitFn={function (intervalSelected: number): void {
+       setInterval(intervalSelected) ;
+    } } />
 
-  useEffect(() => {
-    employeesService.getStatistics("birthDate", 10)
-      .then(stat => setStat(stat))
-  }, [])
-
-  return <Statistics
-    columns={columns}
-    rows={stat.map((st, i) => ({ ...st, id: i, range:`${st.from} - ${st.to}` }))}
-    title="Age Statistics"
-    chartProps={{ data: stat, xAxisKey: "from", yAxisKey: "count" }}
-  />
 }
-
 export default AgeStatistics;

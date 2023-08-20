@@ -1,22 +1,25 @@
-import { Alert, Snackbar } from "@mui/material"
-import { useSelectorAlert } from "../../redux/store"
-import { alertActions } from "../../redux/slices/alertSlice"
-import { useDispatch } from "react-redux"
+import { Alert, Snackbar } from "@mui/material";
+import { StatusType } from "../../model/StatusType";
+import { useEffect, useRef, useState } from "react";
 
 type Props = {
-  autoHideDuration: number
+  message: string;
+  duration?: number;
+  severity: StatusType;
 }
-
-const SnackAlert: React.FC<Props> = ({ autoHideDuration }) => {
-  const alert = useSelectorAlert();
-  const dispatch = useDispatch();
-
-  return <Snackbar open={!!alert.message} autoHideDuration={autoHideDuration}
-    onClose={() => dispatch(alertActions.reset())}>
-    <Alert onClose={() => dispatch(alertActions.reset())} severity={alert.status} sx={{ width: '100%' }}>
-      {alert.message}
+const DEFAULT_DURATION = 5000
+const SnackbarAlert: React.FC<Props> = ({ message, duration, severity }) => {
+  const [open, setOpen] = useState(false);
+  const alertMessage = useRef('')
+  useEffect(() => {
+    message && setOpen(true);
+    alertMessage.current = message;
+  }, [message])
+  return <Snackbar open={open} autoHideDuration={duration || DEFAULT_DURATION}
+    onClose={() => setOpen(false)}>
+    <Alert onClose={() => setOpen(false)} severity={severity} sx={{ width: '100%' }}>
+      {message}
     </Alert>
   </Snackbar>
 }
-
-export default SnackAlert
+export default SnackbarAlert;
