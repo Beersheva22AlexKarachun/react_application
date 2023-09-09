@@ -14,6 +14,7 @@ const MAX_AMOUNT = 20;
 
 const GenerateEmployees: React.FC = () => {
   const dispatch = useDispatch();
+
   function onSubmit(value: string): InputResult {
     const amount = +value;
     const res: InputResult = {
